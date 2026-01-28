@@ -1,0 +1,71 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+README.md
+docs/
+*.md
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Node modules (if any)
+node_modules/
+
+# Build artifacts (except what we need)
+CRM-master/target/
+!CRM-master/target/*.jar
+
+# Docker files
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# Kubernetes files
+kubernetes/
+
+# Scripts
+scripts/
+
+# Test files
+**/test/
+**/*Test.java
+**/*Tests.java
+
+# Maven wrapper (we'll use the one from the base image)
+CRM-master/mvnw
+CRM-master/mvnw.cmd
+CRM-master/.mvn/
+
+# Local configuration
+.env
+.env.local
+.env.*.local
+
+# Backup files
+*.bak
+*.backup

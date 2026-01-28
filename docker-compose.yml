@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  crm-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: crm-app:latest
+    container_name: crm-application
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_NAME=crm
+      - DB_USERNAME=crm_user
+      - DB_PASSWORD=crm_password
+      - JAVA_OPTS=-Xmx512m -Xms256m
+    volumes:
+      - ./logs:/app/logs
+    networks:
+      - crm-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/appinfo/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    depends_on:
+      mysql:
+        condition: service_healthy
+    
+  mysql:
+    image: mysql:5.7
+    container_name: crm-mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root_password
+      - MYSQL_DATABASE=crm
+      - MYSQL_USER=crm_user
+      - MYSQL_PASSWORD=crm_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./CRM-master/src/main/resources/data.sql:/docker-entrypoint-initdb.d/data.sql:ro
+    networks:
+      - crm-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot_password"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+networks:
+  crm-network:
+    driver: bridge
+    name: crm-network
+
+volumes:
+  mysql_data:
+    driver: local
